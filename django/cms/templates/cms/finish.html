@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+
+{% block title %}延命治療についてのアンケート{% endblock title %}
+
+{% block content %}
+    <h3 class="page-header">{{ info_text }}</h3>
+    <hr>
+    <div>
+
+        <a href="{% url 'cms:home'%}" class="btn btn-default btn-sm">
+            <H5>トップに戻る</H5>
+        </a>
+
+    </div>
+    <hr>
+{% endblock content %}

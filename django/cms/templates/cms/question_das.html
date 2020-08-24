@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+
+{% block title %}死生観検査{% endblock title %}
+
+{% block content %}
+    <h3 class="page-header">死生観検査</h3>
+    <h4>所要時間:10分</h4>
+    <hr>
+        <h5>1から27までのことばがあなた自身にどのくらい当てはまるかについて，
+            下の枠内の1から7までの数字のうちもっとも適切なものを括弧内に入れてください。
+            文章全体を総合的に見て，自分にどれだけ当てはまるかを評価してください。
+        </h5>
+        <div class="fixing-base">
+            <div class="fixing-box">
+                <table class="table table-light table-bordered text-center" style="width: 100%;table-layout:fixed;">
+                    <thead>
+                        <tr>
+                            <th>全く違うと思う</th>
+                            <th>おおよそ違うと思う</th>
+                            <th>少し違うと思う</th>
+                            <th>どちらでもない</th>
+                            <th>少しそう思う</th>
+                            <th>まあまあそう思う</th>
+                            <th>強くそう思う</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                            <td>5</td>
+                            <td>6</td>
+                            <td>7</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <hr>
+
+    <form action="{% url 'cms:DAS' %}" method="post" class="form-horizontal" role="form">
+        {% csrf_token %}
+        {% for field in form %}
+            <h4>[{{ field.label }}] : </h4><br>
+            <div class="well" align="center">
+                <input id="{{ field.name }}" type="text"
+                       name="{{ field.name }}"
+                       data-slider-id='ex1Slider'
+                       data-slider-step="1"
+{#                       data-slider-min="1"#}
+{#                       data-slider-max="7"#}
+                       data-slider-value="{{ field.value }}"
+                       data-slider-ticks="[1, 2, 3, 4, 5, 6, 7]"
+                       data-slider-ticks-labels='["1", "2", "3", "4", "5", "6", "7"]'
+                       style="width: 85.5%"
+                />
+            </div>
+            <br>
+            <br>
+            <script type='text/javascript'>
+                $(document).ready(function() {
+                    $('#{{ field.name }}').slider({
+                        formatter: function(value) {
+                            return 'Current value: ' + value;
+                        }
+                    });
+
+                });
+
+                // 固定する場所が存在することの確認
+                if( $('.fixing-base .fixing-box').length > 0 ){
+                    var baseSelector = '.fixing-base';
+                    var fixingSelector = baseSelector + ' .fixing-box';
+
+                    $(window).on('load scroll resize', function(){
+                        var baseTop = $(baseSelector).offset().top;
+
+                        //固定開始位置より後にスクロールされた場合
+                        if( $(window).scrollTop() > baseTop ){
+                            $(fixingSelector).addClass('fixed');
+                            $(baseSelector).height($(fixingSelector).outerHeight());
+                            $(fixingSelector).width($(baseSelector).width())
+
+                        //固定開始位置以前にスクロールされた場合
+                        } else {
+                            $(fixingSelector).removeClass('fixed');
+                            $(baseSelector).height('');
+                            $(fixingSelector).width('');
+                        }
+                    })
+                }
+
+            </script>
+        {% endfor %}
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">次へ</button>
+            </div>
+        </div>
+    </form>
+
+    <a href="{% url 'cms:TIPI_J' %}" class="btn btn-default btn-sm">戻る</a>
+    <a href="{% url 'cms:home' %}" class="btn btn-default btn-sm">アンケートをやめる</a>
+
+
+{% endblock content %}

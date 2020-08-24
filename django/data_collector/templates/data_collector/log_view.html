@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+
+{% block title %}延命治療についてのアンケート{% endblock title %}
+
+{% block content %}
+    <h3 class="page-header">LOG</h3>
+    <a href="{% url 'local_home'%}" class="btn btn-default btn-sm"><H5>ローカルホームに戻る</H5></a>
+
+    <hr>
+
+    <table class="table table-striped table-bordered table-light">
+            <thead>
+                <tr>
+                  <th>ユーザID</th>
+                  <th>タイムスタンプ</th>
+                  <th>状態</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                    <tr>
+                      <td>{{ log.user_id }}</td>
+                      <td>{{ log.timestamp }}</td>
+                      <td>
+
+                          <table class="table table-striped table-bordered table-light">
+                            <thead>
+                                <tr>
+                                    <th>操作</th>
+                                    {% for state in log.state_data %}
+                                        <th>{{ state.name }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                    <tr>
+                                        <td>チェック</td>
+                                        {% for state in log.state_data %}
+                                            <td>
+                                                {% if state.checkBox %}
+                                                    ○
+                                                {% endif %}
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                    <tr>
+                                        <td>詳細</td>
+                                        {% for state in log.state_data %}
+                                            <td>
+                                                {% if state.isDetail %}
+                                                    ○
+                                                {% endif %}
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+
+
+                            </tbody>
+                        </table>
+
+                      </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    <hr>
+{% endblock content %}

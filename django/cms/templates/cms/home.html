@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+
+{% block title %}延命治療についてのアンケート{% endblock title %}
+
+{% block content %}
+    <form method="post" id="main">
+      {% csrf_token %}
+      <h2 class="page-header">{{ info_text }}</h2>
+      <hr>
+      <h5 style="padding-left: 8px;">
+        アンケートを始める前に，
+        <a href="{% url 'cms:agreement'%}" target="_blank">アンケート規約</a>
+        をお読みください．<br>
+
+        <input type="checkbox" name="agree" v-model="agree">
+        <span>規約に同意する場合は，チェックしてください．</span>
+      </h5>
+
+      <hr>
+      *注意 : ブラウザのバージョンが最新ではない場合、表示がされないページがあります。<br>
+      ブラウザのバージョンを最新のものに更新するか、別のブラウザをインストールしてください。<br>
+      (別のブラウザ : Firefox , Google Chrome ...)
+      <hr>
+
+      <div>
+          <div class="form-group" style="margin: 5px">
+              <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" v-bind:disabled="!agree" class="btn btn-primary">アンケートを始める</button>
+              </div>
+          </div>
+      </div>
+
+    </form>
+
+    <hr>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.2/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.16.0/vuedraggable.min.js"></script>
+
+    <script type='text/javascript'>
+         (function() {
+             'use strict';
+             new Vue({
+                 el: "#main",
+                 data: {
+                   agree: false,
+                 },
+                 methods: {
+                 },
+                 computed: {
+                 }
+             });
+         })();
+     </script>
+
+
+{% endblock content %}

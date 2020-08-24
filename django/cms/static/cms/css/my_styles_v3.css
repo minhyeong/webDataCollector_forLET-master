@@ -1,0 +1,44 @@
+
+
+#birth div > select.form-control{
+    width: 22%;
+    display: inline;
+}
+
+#sleep_time div > select.form-control{
+    width: 22%;
+    display: inline;
+}
+
+
+#main div.rankking{
+  background: #d3d9da73;
+  width: 45%;
+}
+
+#main div.implist{
+  background:  #bbb;
+  width: 45%
+  /* padding:  10px;
+  margin: 10px; */
+}
+
+#main div.rankking li{
+  width: 90%;
+  padding: 0px;
+  margin: 2px;
+  border: solid 1px #6091d3;/*線*/
+  border-radius: 5px;/*角の丸み*/
+  list-style: none;
+  cursor: pointer;
+}
+
+#main div.implist li{
+  width: 90%;
+  padding: 0px;
+  margin: 2px;
+  border: solid 1px #6091d3;/*線*/
+  border-radius: 5px;/*角の丸み*/
+  list-style: none;
+  cursor: pointer;
+}

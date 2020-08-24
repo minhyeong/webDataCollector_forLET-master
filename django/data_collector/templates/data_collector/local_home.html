@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+
+{% block title %}延命治療についてのアンケート{% endblock title %}
+
+{% block content %}
+<h2 class="page-header">延命治療についてのアンケート</h2>
+<hr>
+<h4 class="page-header">ローカル専用ページ</h4>
+<ul>
+  <li><a href="{% url 'db_state' %}">データ集計</a></li>
+  <li><a href="{% url 'log_view' %}">ログ管理</a></li>
+  <li>
+    <a href="{% url 'cms:home'%}" >アンケートホームに移動</a>
+  </li>
+</ul>
+{% endblock content %}

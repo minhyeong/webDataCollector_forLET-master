@@ -1,0 +1,451 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+
+{% block title %}生命の質{% endblock title %}
+{% block extrahead %}
+    <style>
+
+        #app h1 {
+          font-size: 16px;
+          border-bottom: 1px solid #ddd;
+          padding: 16px 0;
+        }
+
+        #app li {
+          line-height: 1.5;
+        }
+
+        #app input[type="text"] {
+          padding: 2px;
+        }
+
+        #app ul {
+          padding: 0;
+          list-style: none;
+        }
+
+        #app li > span.done{
+          text-decoration: line-through;
+          color: #bbb;
+        }
+
+        .command{
+          font-size: 12px;
+          cursor: pointer;
+          color: #08c;
+        }
+
+        .info {
+          color: #bbb;
+          font-size: 12px;
+          font-weight: normal;
+        }
+
+        #app h1 > button {
+          float: right;
+        }
+
+        #main div.rankking{
+          background: #d3d9da73;
+          width: 45%;
+        }
+
+        #main div.implist{
+          background:  #bbb;
+          width: 45%
+          /* padding:  10px;
+          margin: 10px; */
+        }
+
+        #main div.rankking li{
+          width: 90%;
+          padding: 5px;
+          margin: 2px;
+          border: solid 1px #6091d3;
+          border-radius: 5px;
+          list-style: none;
+          cursor: pointer;
+          text-align: center;
+        }
+
+        #main div.implist li{
+          padding: 5px;
+          margin: 5px;
+          /*線*/
+          border: solid 1px #6091d3;
+          /*角の丸み*/
+          border-radius: 5px;
+          list-style: none;
+          cursor: pointer;
+          text-align: center;
+        }
+
+        .rank{
+          min-width: 30px;
+          margin-right: 10px;
+          margin-top: 10px;
+          margin-bottom:  10px;
+        }
+
+    </style>
+{% endblock extrahead %}
+{% block content %}
+    <h3 class="page-header">生命の質についてどのように考えていますか？</h3>
+    <h4>所要時間:5分</h4>
+    <hr>
+    <h5>
+        下の事柄に対して、あなたが大切にしている順番をきめてください
+    </h5>
+    <hr>
+
+    <form action="{% url 'cms:question_lifequality_rank_fix' %}" id="main" method="post" class="form-horizontal container" role="form">
+        {% csrf_token %}
+
+        {% verbatim %}
+
+        <div style="display: flex;">
+
+            <div class="implist">
+               <draggable :list="myList"
+                          :options="{group:'ITEMS'}"
+                          :move="checkMove"
+                          @end="onEnd"
+               style="padding: 10px">
+                   <template v-for="item in myList">
+                       <li v-if="item.no != 8">
+                           {{item.name}}
+                       </li>
+                       <span v-else style="min-width: 30px;margin-right: 10px;margin-top: 10px;margin-bottom:  10px;">
+                           {{item.name}}
+                       </span>
+                   </template>
+               </draggable>
+            </div>
+
+            <div style="width: 10%"></div>
+
+            <div class="rankking">
+              <draggable :list="rank1" :options="{group:'ITEMS'}" :move="checkMove" @end="onEnd" style="padding: 10px;display: flex;">
+                <template v-for="item in rank1" :key="item.no" >
+                  <span v-if="item.no == 8" style="min-width: 30px;margin-right: 10px;margin-top: 10px;margin-bottom:  10px;">
+                    {{item.name}}
+                  </span>
+                  <li v-else>
+                    {{item.name}}
+                    <input type="hidden" name="rank1" v-model="item.no">
+                  </li>
+                </template>
+              </draggable>
+
+              <draggable :list="rank2"
+                      :options="{group:'ITEMS'}"
+                      :move="checkMove"
+                      @end="onEnd"
+                      style="padding: 10px;display: flex;">
+                 <template v-for="item in rank2" >
+                   <li v-if="item.no != 8">
+                     {{item.name}}
+                     <input type="hidden" name="rank2" v-model="item.no">
+                   </li>
+                   <span v-else style="min-width: 30px;margin-right: 10px;margin-top: 10px;margin-bottom:  10px;">
+                     {{item.name}}
+                   </span>
+                 </template>
+              </draggable>
+
+              <draggable :list="rank3"
+                      :options="{group:'ITEMS'}"
+                      :move="checkMove"
+                      @end="onEnd"
+                      style="padding: 10px;display: flex;">
+                 <template v-for="item in rank3" >
+                   <li v-if="item.no != 8">
+                     {{item.name}}
+                     <input type="hidden" name="rank3" v-model="item.no">
+                   </li>
+                   <span v-else style="min-width: 30px;margin-right: 10px;margin-top: 10px;margin-bottom:  10px;">
+                     {{item.name}}
+                   </span>
+                 </template>
+              </draggable>
+
+              <draggable :list="rank4"
+                      :options="{group:'ITEMS'}"
+                      :move="checkMove"
+                      @end="onEnd"
+                      style="padding: 10px;display: flex;">
+                 <template v-for="item in rank4" >
+                   <li v-if="item.no != 8">
+                     {{item.name}}
+                     <input type="hidden" name="rank4" v-model="item.no">
+                   </li>
+                   <span v-else style="min-width: 30px;margin-right: 10px;margin-top: 10px;margin-bottom:  10px;">
+                     {{item.name}}
+                   </span>
+                 </template>
+              </draggable>
+
+              <draggable :list="rank5"
+                      :options="{group:'ITEMS'}"
+                      :move="checkMove"
+                      @end="onEnd"
+                      style="padding: 10px;display: flex;">
+                 <template v-for="item in rank5" >
+                   <li v-if="item.no != 8">
+                     {{item.name}}
+                       <input type="hidden" name="rank5" v-model="item.no">
+                   </li>
+                   <span v-else style="min-width: 30px;margin-right: 10px;margin-top: 10px;margin-bottom:  10px;">
+                     {{item.name}}
+                   </span>
+                 </template>
+              </draggable>
+
+              <draggable :list="rank6"
+                      :options="{group:'ITEMS'}"
+                      :move="checkMove"
+                      @end="onEnd"
+                      style="padding: 10px;display: flex;">
+                 <template v-for="item in rank6" >
+                   <li v-if="item.no != 8">
+                       {{item.name}}
+                       <input type="hidden" name="rank6" v-model="item.no">
+                   </li>
+                   <span v-else style="min-width: 30px;margin-right: 10px;margin-top: 10px;margin-bottom:  10px;">
+                     {{item.name}}
+                   </span>
+                 </template>
+              </draggable>
+            </div>
+        </div>
+
+        {% endverbatim %}
+
+        <p v-on:click="resetItems" style="margin: 5px;float: right" class="btn btn-primary">リセット</p>
+        <hr style="margin-top: 60px;">
+
+
+        <div class="form-group" style="margin: 5px">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" v-bind:disabled="!agree" class="btn btn-primary">次へ</button>
+            </div>
+        </div>
+
+
+    </form>
+
+    <hr>
+
+    <a href="{% url 'cms:question_basic' %}" class="btn btn-default btn-sm">戻る</a>
+    <a href="{% url 'cms:home' %}" class="btn btn-default btn-sm">アンケートをやめる</a>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.2/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.16.0/vuedraggable.min.js"></script>
+
+    <script type='text/javascript'>
+           (function() {
+               'use strict';
+               new Vue({
+                   el: "#main",
+                   data: {
+                   agree: false,
+                   items:[
+                     {no:8, name: '', categoryNo: '0' , now_rank: 0},
+                     {no:1, name:'口から食事ができる', categoryNo:'1' , now_rank: 0},
+                     {no:2, name:'自分で動くことができる', categoryNo:'2' , now_rank: 0},
+                     {no:3, name:'自分で考えることができる', categoryNo:'3' , now_rank: 0},
+                     {no:4, name:'自分で呼吸ができる', categoryNo:'4' , now_rank: 0},
+                     {no:5, name:'楽しみがある', categoryNo:'1' , now_rank: 0},
+                     {no:6, name:'苦痛がない', categoryNo:'2' , now_rank: 0}
+                   ],
+                   rank1:[
+                     {no:8, name:'1位', categoryNo:'4' , now_rank: 1}
+                   ],
+                   rank2:[
+                     {no:8, name:'2位', categoryNo:'4' , now_rank: 2}
+                   ],
+                   rank3:[
+                     {no:8, name:'3位', categoryNo:'4' , now_rank: 3}
+                   ],
+                   rank4:[
+                     {no:8, name:'4位', categoryNo:'4' , now_rank: 4}
+                   ],
+                   rank5:[
+                     {no:8, name:'5位', categoryNo:'4' , now_rank: 5}
+                   ],
+                   rank6:[
+                     {no:8, name:'6位', categoryNo:'4' , now_rank: 6}
+                   ]
+                   },
+                   methods: {
+                       checkMove: function(evt, originalEvent){
+                           // console.log(evt);
+
+                           if(evt.draggedContext.element.no === 8) return false;
+                           // console.log(originalEvent);
+                           for(var li = 0 ; li < evt.relatedContext.list.length ; li++){
+                               if(evt.relatedContext.list[li].categoryNo === '0') return true;
+                           }
+
+                           var prev_rank = evt.draggedContext.element.now_rank;
+                           var now_rank = 0;
+                           // now_rankの変更
+                           for(var li = 0 ; li < evt.relatedContext.list.length ; li ++){
+                             if(evt.relatedContext.list[li].no === 8){
+                               now_rank = evt.relatedContext.list[li].now_rank
+                             }
+                           }
+
+                           // console.log("now_rank : " + now_rank);
+                           // console.log("prev_rank : " + prev_rank);
+
+                           var dragg_content = evt.draggedContext.element;
+                           var not_dragg_content_no = -1;
+                           if( evt.relatedContext.list.length > 1){
+                             var cross_flag = true;
+                             for(var li = 0 ; li < evt.relatedContext.list.length ; li ++){
+                               if(dragg_content.no === evt.relatedContext.list[li].no){
+                                 cross_flag = false;
+                               }else{
+                                 not_dragg_content_no = li;
+                               }
+                             }
+                             if(evt.relatedContext.list.length > 2) cross_flag = true;
+                             if(not_dragg_content_no === -1) cross_flag = false;
+
+                             if(cross_flag) {
+                               if(prev_rank === 0) return false;
+                               // console.log("cross!");
+                               evt.relatedContext.list[not_dragg_content_no].now_rank = prev_rank;
+                               eval("this.rank"+String(prev_rank)).push(evt.relatedContext.list[not_dragg_content_no]);
+                               eval("this.rank"+String(now_rank)).splice(not_dragg_content_no , 1);
+                             }
+                           }
+
+                           evt.draggedContext.element.now_rank = now_rank;
+
+                       },
+                       onEnd: function(evt) {
+                           // console.log("onEnd : ");
+                           // console.log(evt);
+                           // console.log("this.items.length" + this.items.length);
+                           if(this.items.length === 1) this.agree = true;
+                           else this.agree = false;
+
+                           for(var ri = 1 ; ri <= 6 ; ri++){
+                              var buf_rank_list = [{no : 8, name : String(ri) + '位', categoryNo : '4', now_rank : ri}];
+                              for( var i = 0 ; i < eval("this.rank"+String(ri)).length ; i++){
+                                if(eval("this.rank" + String(ri))[i].no !== 8){
+                                  buf_rank_list.push(eval("this.rank"+String(ri))[i]);
+                                }
+                              }
+                              // console.log("ri : " + ri);
+                              eval( "this.rank" + String(ri) + "= buf_rank_list" );
+                           }
+
+                           for(var ti = 0 ; ti < this.items.length ; ti ++){
+                             this.items[ti].now_rank = 0;
+                           }
+
+                       },
+                       onItemEnd: function (evt) {
+                         console.log("onItemEnd : ");
+
+                         for(var ri = 1 ; ri <= 6 ; ri++){
+                            var buf_rank_list = [{no : 8, name : String(ri) + '位', categoryNo : '4', now_rank : ri}];
+                            for( var i = 0 ; i < eval("this.rank"+String(ri)).length ; i++){
+                              if(eval("this.rank" + String(ri))[i].no !== 8){
+                                buf_rank_list.push(eval("this.rank"+String(ri))[i]);
+                              }
+                            }
+                            // console.log("ri : " + ri);
+                            eval( "this.rank" + String(ri) + "= buf_rank_list" );
+                            // this.rank1 = buf_rank_list;
+                            // eval("this.rank"+String(ri)) = eval("this.rank"+String(ri)).concat(buf_rank_list);
+                         }
+                           // alert("onItemEnd");
+                           // console.log(evt.draggedContext.element.no);
+                       },
+                       onUpdate: function(evt) {
+                           // alert("onUpdate");
+                           // console.log("onUpdate : " + evt);
+                       },
+                       resetItems: function () {
+                          //  alert("resetItems");
+                           this.agree = false;
+                           this.items = [
+                               {no:8, name: '', categoryNo: '0' , now_rank: 0},
+                               {no:1, name:'口から食事ができる', categoryNo:'1' , now_rank: 0},
+                               {no:2, name:'自分で動くことができる', categoryNo:'2' , now_rank: 0},
+                               {no:3, name:'自分で考えることができる', categoryNo:'3' , now_rank: 0},
+                               {no:4, name:'自分で呼吸ができる', categoryNo:'4' , now_rank: 0},
+                               {no:5, name:'楽しみがある', categoryNo:'1' , now_rank: 0},
+                               {no:6, name:'苦痛がない', categoryNo:'2' , now_rank: 0}
+                               ];
+                           this.rank1 = [{no:8, name:'1位', categoryNo:'4' , now_rank: 1}];
+                           this.rank2 = [{no:8, name:'2位', categoryNo:'4' , now_rank: 2}];
+                           this.rank3 = [{no:8, name:'3位', categoryNo:'4' , now_rank: 3}];
+                           this.rank4 = [{no:8, name:'4位', categoryNo:'4' , now_rank: 4}];
+                           this.rank5 = [{no:8, name:'5位', categoryNo:'4' , now_rank: 5}];
+                           this.rank6 = [{no:8, name:'6位', categoryNo:'4' , now_rank: 6}];
+                       }
+                   },
+                   computed: {
+                       myList: {
+                         get() {
+                            return this.items;
+                         },
+                         set(value) {
+                            this.items = value;
+                         }
+                       },
+                       rank1_list: {
+                           get(){
+                               var new_item = [];
+                               var rem_item = [];
+                               for(var i = 0 ; i < this.rank1.length; i++){
+                                   if(this.rank1[i].no == 8) new_item.push(this.rank1[i]);
+                                   else rem_item.push(this.rank1[i]);
+                               }
+
+                               for(var ri = 0 ; ri < rem_item.length ; ri++){
+                                   new_item.push(rem_item[ri]);
+                               }
+                               console.log("get_rank1");
+                               return new_item;
+
+                           },
+                           set(value) {
+                               var new_item = [];
+                               var rem_item = [];
+                               for(var i = 0 ; i < this.value.length; i++){
+                                   if(this.value[i].no == 8){
+                                       new_item.push(this.value[i]);
+                                   }
+                                   else{
+                                       rem_item.push(this.value[i]);
+                                   }
+                               }
+                               for(var ri = 0 ; ri < rem_item.length ; ri++){
+                                   new_item.push(rem_item[ri]);
+                               }
+
+                               console.log("set_rank1");
+                               this.rank1 = new_item;
+                           }
+                       },
+                       rank1_list2: {
+                           get() {
+                               return this.rank1;
+                           },
+                           set(value) {
+                               this.rank1 = value;
+                           }
+                       }
+                   }
+               });
+           })();
+       </script>
+
+{% endblock content %}

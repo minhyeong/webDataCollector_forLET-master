@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+
+{% block title %}延命治療についてのアンケート{% endblock title %}
+
+{% block content %}
+
+    <h2 class="page-header">延命治療についてのアンケート</h2>
+    <h6>回答数 : {{ user_num }}</h6>
+
+    <div id="chart"></div>
+
+
+    <a href="{% url 'local_home'%}" class="btn btn-default btn-sm"><H5>ローカルホームに戻る</H5></a>
+
+    <script src="https://unpkg.com/frappe-charts@0.0.5/dist/frappe-charts.min.iife.js"></script>
+    <script>
+    let data = {
+      labels: ["~9", "10 ~ 19", "20 ~ 29", "30 ~ 39", "40 ~ 49", "50 ~ 59", "60 ~ 69", "70 ~ 79", "80 ~ 89", "90 ~ 99", "100 ~ "],
+
+      datasets: [
+        {
+          title: "年代別回答者",
+          color: "light-blue",
+          values: [
+            {% for elem in hist_users %}
+            {{ elem }},
+            {% endfor %}
+          ]
+        },
+      ]
+    };
+
+    let chart = new Chart({
+      parent: "#chart", // or a DOM element
+      title: "年代別ヒストグラム",
+      data: data,
+      type: "bar",
+      height: 250,
+      format_tooltip_x: d => (d + "").toUpperCase(),
+      format_tooltip_y: d => d + " pts"
+    });
+    </script>
+
+{% endblock content %}

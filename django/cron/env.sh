@@ -1,0 +1,11 @@
+export HOSTNAME=c1c20cd1eee7
+export PYTHON_PIP_VERSION=18.1
+export HOME=/root
+export OLDPWD=/etc
+export PYTHONUNBUFFERED=1
+export GPG_KEY=0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
+export TERM=xterm
+export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export LANG=C.UTF-8
+export PYTHON_VERSION=3.6.7
+export PWD=/bin

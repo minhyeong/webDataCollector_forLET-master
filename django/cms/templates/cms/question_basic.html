@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+
+{% block title %}基本質問{% endblock title %}
+
+{% block extrahead %}
+    <style>
+        #birth div > select.form-control{
+            width: 22%;
+            display: inline;
+        }
+
+        #sleep_time div > select.form-control{
+            width: 22%;
+            display: inline;
+        }
+    </style>
+{% endblock extrahead %}
+
+{% block content %}
+    <h3 class="page-header">基本的な質問</h3>
+{#    <h4>所要時間:5分</h4>#}
+    <hr>
+    {% if form.birth is not None %}
+        <input type="hidden" id="id_year" value="{{ birth_form.year }}">
+        <input type="hidden" id="id_month" value="{{ birth_form.month }}">
+        <input type="hidden" id="id_day" value="{{ birth_form.day }}">
+    {% endif %}
+    {% if form.sleep_time_bottom is not None %}
+        <input type="hidden" id="id_sleep_time_bottom" value="{{ sleep_time_form.bottom }}">
+    {% endif %}
+    {% if form.sleep_time_top is not None %}
+        <input type="hidden" id="id_sleep_time_top" value="{{ sleep_time_form.top }}">
+    {% endif %}
+
+    <form action="{% url 'cms:question_basic' %}" method="post" class="form-check" role="form">
+        {% csrf_token %}
+
+        <div id="birth" class="form-group">
+            <label class="control-label  " for="id_gendar">{{ form.birth.label }}</label>
+            <div class=" form-control">
+                <select id="year" name="year" required class="form-control">
+                    <option value selected>----</option>
+                </select>
+                <span>年 </span>
+                <select id="month" name="month" required class="form-control">
+                    <option value selected>--</option>
+                </select>
+                <span>月 </span>
+                <select id="day" name="day" required class="form-control">
+                    <option value selected>--</option>
+                </select>
+                <span>日 </span>
+                <script type='text/javascript'>
+                    var time = new Date();
+                    var year = time.getFullYear();
+                    for (var i = year; i >= 1900; i--) {
+                        $('#year').append('<option value="' + i + '">' + i + '</option>');
+                    }
+                    for (var i = 1; i <= 12; i++) {
+                        $('#month').append('<option value="' + i + '">' + i + '</option>');
+                    }
+                    for (var i = 1; i <= 31; i++) {
+                        $('#day').append('<option value="' + i + '">' + i + '</option>');
+                    }
+                </script>
+                <script>
+                    var idy = $("#id_year").val();
+                    var idm = $("#id_month").val();
+                    var idd = $("#id_day").val();
+                    if(idy !== "0") $('#year').val(idy);
+                    if(idm !== "0") $('#month').val(idm);
+                    if(idd !== "0") $('#day').val(idd);
+                </script>
+            </div>
+        </div>
+
+        {{ form.gendar|bootstrap }}
+
+        {{ form.blood|bootstrap }}
+
+{#        {{ form.sleep_time|bootstrap }}#}
+        <div id="sleep_time" class="form-group">
+            <label class="control-label  " for="id_gendar">平均睡眠時間</label>
+            <div class=" form-control">
+                <select id="sleep_time_bottom" name="sleep_time_bottom" required class="form-control">
+                    <option value selected>----</option>
+                </select>
+                <span>時間  ~ </span>
+                <select id="sleep_time_top" name="sleep_time_top" required class="form-control">
+                    <option value selected>--</option>
+                </select>
+                <span>時間 </span>
+                <script type='text/javascript'>
+                    for (var i = 0; i <= 24; i++) {
+                        $('#sleep_time_bottom').append('<option value="' + i + '">' + i + '</option>');
+                    }
+                    for (var i = 0; i <= 24; i++) {
+                        $('#sleep_time_top').append('<option value="' + i + '">' + i + '</option>');
+                    }
+                </script>
+                <script>
+                    var idstb = $("#id_sleep_time_bottom").val();
+                    var idstt = $("#id_sleep_time_top").val();
+                    if(idstb !== "-1") $('#sleep_time_bottom').val(idstb);
+                    if(idstt !== "-1") $('#sleep_time_top').val(idstt);
+                </script>
+            </div>
+        </div>
+        {{ form.sport|bootstrap }}
+        {{ form.music|bootstrap }}
+        {{ form.taste|bootstrap }}
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">次へ</button>
+            </div>
+        </div>
+    </form>
+    <a href="{% url 'cms:home' %}" class="btn btn-default btn-sm">アンケートをやめる</a>
+{% endblock content %}

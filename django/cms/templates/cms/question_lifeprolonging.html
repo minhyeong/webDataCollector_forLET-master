@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+
+{% block title %}延命治療{% endblock title %}
+{% block extrahead %}
+    <style>
+
+        .command{
+          font-size: 12px;
+          cursor: pointer;
+          color: #08c;
+        }
+
+        .info {
+          color: #bbb;
+          font-size: 12px;
+          font-weight: normal;
+        }
+
+        .ratio{
+          float: left;
+        }
+
+        .ratio_bar{
+          float: left;
+          background-color: rgba(27, 204, 204, 0.3);
+        }
+
+        #main p.dis_non{
+            display: none;
+        }
+    </style>
+{% endblock extrahead %}
+{% block content %}
+    <h3 class="page-header">延命治療を選んでください</h3>
+    <h5>積極的な治療を行っても改善が期待できないと医療者が判断した場合に希望される延命治療についてチェックしてください
+        <br>※数値は，あなたの考えに似ている人が，その治療法を選んだ割合を示しています。
+    </h5>
+    <hr>
+
+    <form action="{% url 'cms:question_lifeprolonging' %}" method="post" id="main" class="form-horizontal" role="form">
+
+        {% csrf_token %}
+        {% verbatim %}
+        <template v-for="(item , index) in items" >
+          <div style="display: flex">
+            <input type="checkbox" v-bind:name="item.name" v-model="item.checkBox" style="transform: scale(1.5);margin: 10px;" >
+            <div>
+              <span style="font-size: 20px">{{ item.label }}</span>
+              <span @click="expansionItem(index)" class="command">...{{ botton_text[item.isDetail ? 0 : 1 ] }}</span>
+              <br>
+              <span>
+                <span class="ratio">
+                  {{ ratio_num(item.ratio) }}
+                </span>
+                <span class="ratio_bar" v-bind:style="{width: ratio_bar(item.ratio)}">
+                  &nbsp;
+                </span>
+              </span>
+              <br>
+              <p :class="{dis_non: !item.isDetail}" style="margin-left:40px">
+                  {{ des_dict[item.name] }}
+              </p>
+            <div>
+          </div>
+          <hr>
+        </template>
+        {% endverbatim %}
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button v-on:click="putLog" type="submit" class="btn btn-success">送信</button>
+            </div>
+        </div>
+
+    </form>
+
+    <a href="{% url 'cms:DAS'  %}" class="btn btn-default btn-sm">戻る</a>
+    <a href="{% url 'cms:home' %}" class="btn btn-default btn-sm">アンケートをやめる</a>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        var des_dict = {
+            yk:"痛みを和らげるために鎮痛薬が使用されますが、眠気が出て意識がぼんやりとなります。呼吸苦を和らげるために鎮静薬が使用されますが、呼吸が抑えられて死期が早まることがあります。",
+            tje:"首などから太い静脈にチューブを入れて点滴します。水分に加えて栄養を入れることができますが、最終的には低栄養状態になります。管を入れているところから細菌感染が起きることがあります。",
+            ke:"内視鏡を使って麻酔した上で胃に穴を開けてチューブを通す方法です。鼻チューブと同じく栄養補給することはできますが、最終的には栄養を吸収することができなくなります。 液体栄養剤が食道に逆流して肺に入って肺炎を起こすことがあります。",
+            syo:"手や足からチューブを入れて点滴します。すぐに脱水にならないようにすることができますが、栄養はほとんどないので、徐々に低栄養状態になっていきます。\n" +
+            "針を刺すときの痛みと、点滴中に手を固定しておかないといけないという苦痛があります。",
+            zk:"気管に口からチューブを入れて人工的に肺に酸素を送ります。８ミリ程度のチューブが口から入っているため苦痛があり、苦痛が強い場合は睡眠薬や麻酔薬を使って眠らせる必要があることがあります。気管に穴を開けて直接チューブを首から入れる方法もあります。いずれの方法でもチューブが入っている間は声を出すことはできません。",
+            ks:"鼻からチューブを胃まで通して液体栄養剤を注入します。栄養補給することができますが、最終的には栄養を吸収することができなくなります。液体栄養剤が食道に逆流して肺に入って肺炎を起こすことがあります。",
+            zt:"機械に血液を通し、血液中の老廃物や不要な 水分を除去し、血液をきれいにする方法です。 １回４時間程度かかり、通常週３回行います。 毎回血管に針を刺す必要があり痛みがあります。",
+            sm:"血圧を維持するための昇圧剤を投与したり、呼吸を維持するために人工呼吸を行ったり、心臓マッサージをします。心臓マッサージでは肋骨が折れることがあり痛みが残ります。",
+            ot:""
+        };
+
+        axios.defaults.xsrfCookieName = 'csrftoken';
+        axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+
+        (function() {
+          'use strict';
+          new Vue({
+              el: "#main",
+              data: {
+                  items:[],
+                  des_dict:{},
+                  botton_text:["詳細を閉じる","詳細を開く"]
+              },
+              methods: {
+                  expansionItem: function(index){
+                      var state = this.items[index].isDetail;
+                      this.items[index].isDetail = !state;
+                  },
+                  putLog: function(){
+                    axios.put(this.endpoint(),{
+                        Item: {
+                            user_id : "{{ user_id }}",
+                            timestamp : Date.now(),
+                            state : JSON.stringify(this.items)
+                        }
+                    }).then(response => {
+
+                    }).catch(function(err){
+
+                    });
+                  },
+                  endpoint: function(){
+                      return "{% url 'cms:logging' %}";
+                  },
+                  ratio_bar(ratio) {
+                    return String(ratio*3)+"px";
+                  },
+                  ratio_num(ratio){
+                    // console.log(typeof(ratio))
+                    return String(Number(ratio).toFixed(1) + " %")
+                  }
+              },
+              watch: {
+                items: {
+                  handler: function() {
+                    {#alert('putLog!');#}
+                      this.putLog();
+                  },
+                  deep: true
+                },
+              },
+              created: function () {
+                  {% for field in will_help_data.result %}
+                      var buf = {};
+                      buf["name"] = "{{ field.id }}";
+                      buf["label"] = "{{ field.name }}";
+                      buf["ratio"] = "{{ field.ratio }}";
+                      buf["isDetail"] = false;
+                      buf["checkBox"] = false;
+                      this.items.push(buf);
+                  {% endfor %}
+                  this.des_dict = des_dict
+              },
+              computed: {
+              }
+
+          });
+        })();
+    </script>
+
+{% endblock content %}
