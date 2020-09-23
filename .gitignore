@@ -21,3 +21,4 @@ staticfiles
 
 # 開発環境用
 venv
+django/env
